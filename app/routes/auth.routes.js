@@ -10,14 +10,14 @@ module.exports = function (app) {
         next();
     });
 
-    app.post(
-        "/api/auth/signup",
-        [
-            verifySignUp.checkRolesExisted,
-            verifySignUp.checkDuplicateUsernameOrEmail, 
-        ],
-        controller.signup
-    );
+    // app.post(
+    //     "/api/auth/signup",
+    //     [
+    //         verifySignUp.checkRolesExisted,
+    //         verifySignUp.checkDuplicateUsernameOrEmail, 
+    //     ],
+    //     controller.signup
+    // );
 
     app.post("/api/auth/signin", controller.signin);
 

@@ -30,6 +30,8 @@ db.sequelize = sequelize;
 
 db.user = require("../models/user.model.js")(sequelize, Sequelize);
 db.role = require("../models/role.model.js")(sequelize, Sequelize);
+db.parent = require("../models/parent.model.js")(sequelize, Sequelize);
+db.student = require("../models/student.model.js")(sequelize, Sequelize);
 db.refreshToken = require("../models/refreshToken.model.js")(sequelize, Sequelize);
 
 
@@ -52,7 +54,27 @@ db.user.hasOne(db.refreshToken, {
     foreignKey: 'userId', targetKey: 'id'
 });
 
+// one to many parent-student
+db.parent.hasMany(db.student);
+db.student.belongsTo(db.parent);
 
-db.ROLES = ["user", "admin", "moderator"];
+// one to many user-parent
+db.user.hasOne(db.parent, {
+    foreignKey: 'userId', targetKey: 'id'
+});
+
+db.parent.belongsTo(db.user, {
+    foreignKey: 'userId', targetKey: 'id'
+});
+// one to many user-student
+db.user.hasOne(db.student, {
+    foreignKey: 'userId', targetKey: 'id'
+});
+db.student.belongsTo(db.user, {
+    foreignKey: 'userId', targetKey: 'id'
+});
+
+
+db.ROLES = ["student", "parent", "admin"];
 
 module.exports = db;

@@ -19,6 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 const db = require("./app/models");
 const Role = db.role;
 const User = db.user;
+const Parent = db.parent;
+const Student = db.student;
 
 db.sequelize.sync();
 // force: true will drop the table if it already exists
@@ -47,12 +49,12 @@ const bcrypt = require("bcryptjs");
 function initial() {
     Role.create({
         id: 1,
-        name: "user"
+        name: "student"
     });
 
     Role.create({
         id: 2,
-        name: "moderator"
+        name: "parent"
     });
 
     Role.create({
@@ -60,6 +62,7 @@ function initial() {
         name: "admin"
     });
 
+    // user 1
     User.create({
         username: "admin",
         email: "admin@gmail.com",
@@ -69,13 +72,56 @@ function initial() {
             // admin role = 3
             user.setRoles([3]);
         });
+    // user 2
     User.create({
-        username: "user",
-        email: "user@gmail.com",
-        password: bcrypt.hashSync("user", 8)
+        username: "parent",
+        email: "parent@gmail.com",
+        password: bcrypt.hashSync("parent", 8)
     })
         .then(user => {
-            // user role = 1
+            // parent role = 1
+            user.setRoles([2]);
+        });
+    // parent
+    Parent.create({
+        phone_number: "0787887155",
+        parent_name: "parent",
+        userId: 2
+    });
+    
+    // user 3
+    User.create({
+        username: "student1",
+        email: "student1@gmail.com",
+        password: bcrypt.hashSync("student1", 8)
+    })
+        .then(user => {
+            // student role = 1`
             user.setRoles([1]);
         });
+    // user 4
+    User.create({
+        username: "student2",
+        email: "student2@gmail.com",
+        password: bcrypt.hashSync("student2", 8)
+    })
+        .then(user => {
+            // student role = 1
+            user.setRoles([1]);
+        });
+    
+    // student 1
+    Student.create({
+        student_code: "S1",
+        student_name: "student1",
+        parentPhoneNumber: "0787887155",
+        userId: 3
+    });
+    // student 2
+    Student.create({
+        student_code: "S2",
+        student_name: "student2",
+        parentPhoneNumber: "0787887155",
+        userId: 4
+    });
 }
