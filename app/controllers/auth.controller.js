@@ -1,6 +1,6 @@
 const db = require("../models");
 const config = require("../config/auth.config");
-const { user: User, role: Role, refreshToken: RefreshToken } = db;
+const { user: User, role: Role, refreshToken: RefreshToken, student: Student, } = db;
 
 const Op = db.Sequelize.Op;
 
@@ -43,7 +43,7 @@ exports.signin = (req, res) => {
     User.findOne({
         where: {
             username: req.body.username
-        }
+        },
     })
         .then(async (user) => {
             if (!user) {
@@ -68,6 +68,27 @@ exports.signin = (req, res) => {
 
             let refreshToken = await RefreshToken.createToken(user);
 
+            var studentList = [];
+            await db.student.findAll({
+                where: {
+                    userId: user.id
+                },
+            }).then(stu => {
+                for (let i = 0; i < stu.length; i++) {
+                    studentList.push(stu[i].student_code);
+                }
+            });
+            var parentList = [];
+            await db.parent.findAll({
+                where: {
+                    userId: user.id
+                },
+            }).then(par => {
+                for (let i = 0; i < par.length; i++) {
+                    parentList.push(par[i].phone_number);
+                }
+            });
+
             let authorities = [];
             user.getRoles().then(roles => {
                 for (let i = 0; i < roles.length; i++) {
@@ -81,6 +102,8 @@ exports.signin = (req, res) => {
                     roles: authorities,
                     accessToken: token,
                     refreshToken: refreshToken,
+                    studentList: studentList,
+                    parentList: parentList,
                 });
             });
         })
