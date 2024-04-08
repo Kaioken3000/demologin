@@ -20,12 +20,12 @@ const db = require("./app/models");
 const Role = db.role;
 const User = db.user;
 
-// db.sequelize.sync();
+db.sequelize.sync();
 // force: true will drop the table if it already exists
-db.sequelize.sync({ force: true }).then(() => {
-    console.log('Drop and Resync Database with { force: true }');
-    initial();
-});
+// db.sequelize.sync({ force: true }).then(() => {
+//     console.log('Drop and Resync Database with { force: true }');
+//     initial();
+// });
 
 // simple route
 app.get("/", (req, res) => {
@@ -68,5 +68,14 @@ function initial() {
         .then(user => {
             // admin role = 3
             user.setRoles([3]);
+        });
+    User.create({
+        username: "user",
+        email: "user@gmail.com",
+        password: bcrypt.hashSync("user", 8)
+    })
+        .then(user => {
+            // user role = 1
+            user.setRoles([1]);
         });
 }
