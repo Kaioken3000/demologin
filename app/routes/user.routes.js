@@ -38,7 +38,7 @@ module.exports = function (app) {
         parent.findAllStudentByParentId
     );
     // Retrieve one Student with Parent id and student id
-    app.get(
+    app.post(
         "/api/student/:parentid/:studentid", 
         [authJwt.verifyToken, authJwt.isParent],
         parent.findStudentByParentIdAndStudentId
