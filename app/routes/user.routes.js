@@ -53,7 +53,7 @@ module.exports = function (app) {
     );
     // Retrieve one Student with Parent id and student id
     app.post(
-        "/api/student/:teacher/:studentid", 
+        "/api/student_in_class/:teacher/:studentid", 
         [authJwt.verifyToken, authJwt.isTeacher],
         teacher.findStudentByTeacherIdAndStudentId
     );
