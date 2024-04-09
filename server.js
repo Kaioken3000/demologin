@@ -21,6 +21,8 @@ const Role = db.role;
 const User = db.user;
 const Parent = db.parent;
 const Student = db.student;
+const Teacher = db.teacher;
+const Class = db.class;
 
 db.sequelize.sync();
 // force: true will drop the table if it already exists
@@ -47,6 +49,7 @@ app.listen(PORT, () => {
 const bcrypt = require("bcryptjs");
 
 function initial() {
+    /*------------------Create Role------------------*/
     Role.create({
         id: 1,
         name: "student"
@@ -59,9 +62,15 @@ function initial() {
 
     Role.create({
         id: 3,
+        name: "teacher"
+    });
+
+    Role.create({
+        id: 4,
         name: "admin"
     });
 
+    /*------------------Create User Admin------------------*/
     // user 1
     User.create({
         username: "admin",
@@ -69,9 +78,11 @@ function initial() {
         password: bcrypt.hashSync("admin", 8)
     })
         .then(user => {
-            // admin role = 3
-            user.setRoles([3]);
+            // admin role = 4
+            user.setRoles([4]);
         });
+
+    /*------------------Create User Parent------------------*/
     // user 2
     User.create({
         username: "parent",
@@ -79,7 +90,7 @@ function initial() {
         password: bcrypt.hashSync("parent", 8)
     })
         .then(user => {
-            // parent role = 1
+            // parent role = 2
             user.setRoles([2]);
         });
     // parent
@@ -88,8 +99,33 @@ function initial() {
         parent_name: "parent",
         userId: 2
     });
-    
+
+    /*------------------Create User Teacher and Class------------------*/
     // user 3
+    User.create({
+        username: "teacher",
+        email: "teacher@gmail.com",
+        password: bcrypt.hashSync("teacher", 8)
+    })
+        .then(user => {
+            // teacher role = 3
+            user.setRoles([3]);
+        });
+    // teacher
+    Teacher.create({
+        teacher_code: "T1",
+        teacher_name: "teacher",
+        userId: 3
+    });
+    // class
+    Class.create({
+        class_code: "C1",
+        class_name: "class1",
+        teacherTeacherCode: "T1"
+    });
+
+    /*------------------Create User Student------------------*/
+    // user 4
     User.create({
         username: "student1",
         email: "student1@gmail.com",
@@ -99,7 +135,7 @@ function initial() {
             // student role = 1`
             user.setRoles([1]);
         });
-    // user 4
+    // user 5
     User.create({
         username: "student2",
         email: "student2@gmail.com",
@@ -115,13 +151,15 @@ function initial() {
         student_code: "S1",
         student_name: "student1",
         parentPhoneNumber: "0787887155",
-        userId: 3
+        userId: 4,
+        classClassCode: "C1"
     });
     // student 2
     Student.create({
         student_code: "S2",
         student_name: "student2",
         parentPhoneNumber: "0787887155",
-        userId: 4
+        userId: 5,
+        classClassCode: "C1"
     });
 }

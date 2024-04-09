@@ -1,6 +1,6 @@
 const db = require("../models");
 const config = require("../config/auth.config");
-const { user: User, role: Role, refreshToken: RefreshToken, student: Student, } = db;
+const { user: User, role: Role, refreshToken: RefreshToken, student: Student, teacher: Teacher, } = db;
 
 const Op = db.Sequelize.Op;
 
@@ -88,6 +88,16 @@ exports.signin = (req, res) => {
                     parentList.push(par[i].phone_number);
                 }
             });
+            var teacherList = [];
+            await db.teacher.findAll({
+                where: {
+                    userId: user.id
+                },
+            }).then(teach => {
+                for (let i = 0; i < teach.length; i++) {
+                    teacherList.push(teach[i].teacher_code);
+                }
+            });
 
             let authorities = [];
             user.getRoles().then(roles => {
@@ -104,6 +114,7 @@ exports.signin = (req, res) => {
                     refreshToken: refreshToken,
                     studentList: studentList,
                     parentList: parentList,
+                    teacherList: teacherList,
                 });
             });
         })

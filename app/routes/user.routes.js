@@ -2,6 +2,7 @@ const { authJwt } = require("../middleware");
 const user = require("../controllers/user.controller");
 const parent = require("../controllers/parent.controller");
 const student = require("../controllers/student.controller");
+const teacher = require("../controllers/teacher.controller");
 
 module.exports = function (app) {
     app.use(function (req, res, next) {
@@ -42,6 +43,19 @@ module.exports = function (app) {
         "/api/student/:parentid/:studentid", 
         [authJwt.verifyToken, authJwt.isParent],
         parent.findStudentByParentIdAndStudentId
+    );
+    /*--------------------------Teacher route--------------------------*/
+    // Retrieve all Class with Teacher id
+    app.get(
+        "/api/allclasses/:teacherid", 
+        [authJwt.verifyToken, authJwt.isTeacher],
+        teacher.findAllClassByTeacherId
+    );
+    // Retrieve one Student with Parent id and student id
+    app.post(
+        "/api/student/:teacher/:studentid", 
+        [authJwt.verifyToken, authJwt.isTeacher],
+        teacher.findStudentByTeacherIdAndStudentId
     );
     /*--------------------------Student route--------------------------*/
     // Retrieve one Student with student id
